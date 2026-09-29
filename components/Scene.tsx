@@ -14,8 +14,8 @@ function StudioEnv() {
       <Lightformer form="rect" intensity={4} position={[0, 5, 0]} rotation={[Math.PI / 2, 0, 0]} scale={[8, 8, 1]} />
       {/* 两侧补光，让镀铬件有带状反射 */}
       <Lightformer form="rect" intensity={2} position={[-5, 2, 0]} rotation={[0, Math.PI / 2, 0]} scale={[6, 3, 1]} />
-      <Lightformer form="rect" intensity={2} position={[5, 2, 0]} rotation={[0, -Math.PI / 2, 0]} scale={[6, 3, 1]} color="#cfe6ff" />
-      <Lightformer form="rect" intensity={1.5} position={[0, 2, -5]} scale={[6, 3, 1]} color="#ffd9b0" />
+      <Lightformer form="rect" intensity={2} position={[5, 2, 0]} rotation={[0, -Math.PI / 2, 0]} scale={[6, 3, 1]} color="#ffd98a" />
+      <Lightformer form="rect" intensity={1.2} position={[0, 2, -5]} scale={[6, 3, 1]} color="#9fe8ff" />
       <Lightformer form="circle" intensity={2} position={[0, 1, 5]} scale={3} />
     </Environment>
   );
@@ -43,13 +43,13 @@ export function Scene() {
         shadow-camera-top={4}
         shadow-camera-bottom={-4}
       />
-      <spotLight position={[-4, 5, -2]} intensity={60} angle={0.5} penumbra={0.8} color="#7eb8ff" />
+      <spotLight position={[-4, 5, -2]} intensity={50} angle={0.5} penumbra={0.8} color="#ffb627" />
 
       {/* 架子鼓 */}
       <DrumKit />
 
       {/* 接触阴影，增强空间感 */}
-      <ContactShadows position={[0, 0.02, 0]} opacity={0.6} scale={8} blur={2.4} far={2} />
+      <ContactShadows position={[0, 0.02, 0]} opacity={0.65} scale={8} blur={2.4} far={2} color="#000000" />
 
       {/* 360° 旋转 + 缩放 */}
       <OrbitControls

@@ -94,12 +94,18 @@ export function PianoKeys({ instrument }: { instrument: InstrumentId }) {
     <div className="piano-stage">
       <div className="piano-meta">
         <span className="piano-inst">
-          {def.icon} {def.name} · {def.desc}
+          <span className="inst-icon">{def.icon}</span>
+          <span>
+            {def.name}
+            <span className="inst-sub">
+              {def.short} · {def.desc}
+            </span>
+          </span>
         </span>
         <span className="octave-ctrl">
-          <button onClick={() => shiftOctave(-1)} title="降低八度 (Z)">Z ▼</button>
-          <span>八度 {octaveShift >= 0 ? '+' : ''}{octaveShift}</span>
-          <button onClick={() => shiftOctave(1)} title="升高八度 (X)">▲ X</button>
+          <button onClick={() => shiftOctave(-1)} title="降低八度 (Z)">−</button>
+          <span className="oct-label">{octaveShift >= 0 ? '+' : ''}{octaveShift} oct</span>
+          <button onClick={() => shiftOctave(1)} title="升高八度 (X)">+</button>
         </span>
       </div>
 
@@ -152,7 +158,7 @@ export function PianoKeys({ instrument }: { instrument: InstrumentId }) {
         })}
       </div>
       <p className="piano-hint">
-        点击 / 拖动滑过琴键演奏 · 键盘 A–; 对应琴键（白键 ASDFGHJKL，黑键 WET YUOP） · Z/X 切换八度
+        点击或按住拖动琴键演奏 · 键盘 A–L 白键，W E T Y U O P 黑键 · Z / X 切换八度
       </p>
     </div>
   );

@@ -68,9 +68,10 @@ export function DrumPiece({
       }}
     >
       {children}
+      {/* 琥珀色发光 */}
       <mesh ref={glow} scale={highlightSize} visible={false} raycast={() => null}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color="#00e5ff" transparent opacity={0} depthWrite={false} />
+        <meshBasicMaterial color="#ffb627" transparent opacity={0} depthWrite={false} />
       </mesh>
     </group>
   );

@@ -28,8 +28,17 @@ export default function Home() {
       {/* 顶部乐器切换栏 */}
       <nav className="stagebar">
         <div className="brand">
-          <span className="brand-name">Virtuoso<span className="brand-accent">Stage</span></span>
-          <span className="brand-sub">虚拟乐器演奏台</span>
+          <div className="brand-mark">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M9 18V5l12-2v13" stroke="#1a1102" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="6" cy="18" r="3" fill="#1a1102" />
+              <circle cx="18" cy="16" r="3" fill="#1a1102" />
+            </svg>
+          </div>
+          <div className="brand-text">
+            <span className="brand-name">Virtuoso<em>Stage</em></span>
+            <span className="brand-tag">虚拟乐器演奏台</span>
+          </div>
         </div>
         <div className="stage-tabs">
           {STAGES.map((s) => {

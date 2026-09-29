@@ -111,9 +111,12 @@ export function ScorePanel() {
         : '—';
 
   return (
-    <div className="score-panel">
+    <div className={`score-panel${isPlaying ? ' is-playing' : ''}`}>
       <div className="score-card">
-        <div className="score-title">🎼 乐谱播放</div>
+        <div className="score-title">
+          <span className="dot" />
+          乐谱
+        </div>
 
         <select
           value={selected?.name ?? ''}
@@ -165,7 +168,7 @@ export function ScorePanel() {
 
         <div className="score-actions">
           <label className="score-import">
-            📥 导入 JSON 乐谱
+            <span>📥</span> 导入 JSON 乐谱
             <input
               type="file"
               accept=".json,application/json"
