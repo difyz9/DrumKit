@@ -95,11 +95,20 @@ Zustand                                → 演奏状态
 - **同 step 多个音符 = 和弦**（同时发声 + 琴键同时高亮）
 - 导入后自动切换到对应乐器台
 
-**导入方式**：乐谱面板点「导入 JSON 乐谱」选文件，或**直接把 `.json` 拖到页面上**；导入的乐谱存 localStorage，刷新不丢；格式错误会给出精确到字段的中文提示。
+### 📷 MiMo AI 识谱（图片 → JSON 乐谱）
 
-**播放引擎**：`setTimeout + lookahead(120ms)` 双阶段调度，音频与动画事件同刻触发；进度条以拍为单位显示。
+集成小米 [MiMo 图片理解 API](https://mimo.mi.com/docs/zh-CN/quick-start/usage-guide/multimodal-understanding/image-understanding)（OpenAI 兼容协议，模型 `mimo-v2.6-pro`），把乐谱照片直接转成可演奏的 JSON 鼓谱/旋律谱：
 
-内置 11 首演示乐谱：Basic Rock / Funky Drummer / Tom Groove Fill（鼓），小星星（钢琴）、欢乐颂（萨克斯）、茉莉花（葫芦丝）、C 大调音阶（长笛/手风琴）、布鲁斯lick（口琴）、和弦进行（电子琴）。
+- 乐谱面板点「AI 识谱」：拖入 / 粘贴（⌘V）/ 上传图片
+- 图片自动压缩（长边≤1600px）转 Base64 调用 API
+- Prompt 内置完整乐谱格式规范 + 五线谱位置→轨道映射规则 + 简谱→音名转换规则
+- 返回 JSON 经本地校验后自动入库，可直接演奏
+- 识别类型可指定：自动 / 鼓谱 / 旋律谱
+- API Key 在面板中输入，仅存 localStorage
+
+使用前需在 [mimo.mi.com](https://mimo.mi.com) 控制台获取 API Key。
+
+**内置 11 首演示乐谱**：Basic Rock / Funky Drummer / Tom Groove Fill（鼓），小星星（钢琴）、欢乐颂（萨克斯）、茉莉花（葫芦丝）、C 大调音阶（长笛/手风琴）、布鲁斯lick（口琴）、和弦进行（电子琴）。
 
 ### 界面
 
@@ -119,13 +128,15 @@ components/
   DrumPiece.tsx            # 可点击鼓件（下沉动画 + 发光）
   DrumKeyboard.tsx         # 架子鼓 QWERTY 键盘
   PianoKeys.tsx            # 旋律乐器可视化琴键
-  ScorePanel.tsx           # 乐谱面板（选择/播放/导入）
+  ScorePanel.tsx           # 乐谱面板（选择/播放/导入/AI 识谱）
+  OcrPanel.tsx             # MiMo AI 识谱弹窗
   useScorePlayer.ts        # 乐谱播放引擎
 lib/
   audio.ts                 # 鼓声音源 + QWERTY 键位映射
   instruments.ts           # 乐器注册表 + 8 种音色合成
   note.ts                  # 音名/MIDI 工具
   score.ts                 # 乐谱格式定义/校验/解析 + 演示曲
+  mimo.ts                  # MiMo 图片理解 API 客户端 + 识谱 prompt
 store/drums.ts             # Zustand 全局状态
 public/
   sounds/                  # 鼓声采样（来自 DrumKit 项目）
@@ -152,6 +163,7 @@ npm run build  # 生产构建
 - [x] QWERTY 键盘演奏（DrumKit 集成）
 - [x] JSON 乐谱格式 + 自动演奏引擎
 - [x] 8 种合成乐器 + 可视化琴键
+- [x] MiMo AI 识谱：乐谱图片 → JSON 乐谱
 - [ ] MIDI 输入设备接入（Web MIDI API）
 - [ ] 乐谱时间轴编辑器（图形化编谱）
 - [ ] AI 鼓手：AI 生成 `{instrument, time, velocity}` 事件流驱动演奏

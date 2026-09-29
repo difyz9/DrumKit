@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useScorePlayer } from './useScorePlayer';
+import { OcrPanel } from './OcrPanel';
 import { validateScore, DEMO_SCORES, totalSteps, stepDuration, type Score } from '@/lib/score';
 import { INSTRUMENTS, getInstrument } from '@/lib/instruments';
 import { useDrumStore } from '@/store/drums';
@@ -167,6 +168,11 @@ export function ScorePanel() {
         )}
 
         <div className="score-actions">
+          <OcrPanel
+            onImported={(score) => {
+              importScore(JSON.stringify(score));
+            }}
+          />
           <label className="score-import">
             <span>📥</span> 导入 JSON 乐谱
             <input
