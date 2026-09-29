@@ -1,88 +1,70 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
 import { Scene } from '@/components/Scene';
-import { useDrumStore } from '@/store/drums';
-import { KEYBOARD, playKey, playSound } from '@/lib/audio';
+import { ScorePanel } from '@/components/ScorePanel';
+import { PianoKeys } from '@/components/PianoKeys';
+import { DrumKeyboard } from '@/components/DrumKeyboard';
+import { useDrumStore, type Stage } from '@/store/drums';
+import { INSTRUMENTS, getInstrument, type InstrumentId } from '@/lib/instruments';
+
+const STAGES: { id: Stage; name: string; icon: string; sub: string }[] = [
+  { id: 'drums', name: '架子鼓', icon: '🥁', sub: '3D' },
+  ...INSTRUMENTS.map((i) => ({
+    id: i.id as Stage,
+    name: i.name,
+    icon: i.icon,
+    sub: i.short,
+  })),
+];
 
 export default function Home() {
-  const hit = useDrumStore((s) => s.hit);
-  const setActiveKey = useDrumStore((s) => s.setActiveKey);
-  const activeKey = useDrumStore((s) => s.activeKey);
-  const autoRotate = useDrumStore((s) => s.autoRotate);
-  const toggleAutoRotate = useDrumStore((s) => s.toggleAutoRotate);
-  const keyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const triggerKey = useCallback(
-    (key: string) => {
-      const soundId = playKey(key);
-      if (!soundId) return;
-      hit(soundId); // 3D 鼓件联动动画
-      setActiveKey(key);
-      if (keyTimer.current) clearTimeout(keyTimer.current);
-      keyTimer.current = setTimeout(() => setActiveKey(null), 120);
-    },
-    [hit, setActiveKey]
-  );
-
-  // 键盘敲击（与参考项目一致：忽略带修饰键的组合键）
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.altKey || e.metaKey || e.repeat) return;
-      triggerKey(e.key.toLowerCase());
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [triggerKey]);
+  const stage = useDrumStore((s) => s.stage);
+  const setStage = useDrumStore((s) => s.setStage);
+  const inst = getInstrument(stage);
+  const isMelody = inst !== undefined;
 
   return (
-    <main style={{ position: 'fixed', inset: 0 }}>
-      {/* 3D 架子鼓 */}
-      <Scene />
-
-      <div className="title">
-        <h1>Drum 🥁 Kit 3D</h1>
-        <p>MELODY UP TOP · DRUMS IN THE MIDDLE · BASS DOWN LOW</p>
-      </div>
-
-      <div className="controls">
-        <button className={autoRotate ? 'on' : ''} onClick={toggleAutoRotate}>
-          {autoRotate ? '⏸ 停止自动旋转' : '▶ 自动旋转'}
-        </button>
-      </div>
-
-      {/* QWERTY 演奏键盘（参考 DrumKit 项目） */}
-      <div className="keyboard" aria-label="QWERTY instrument keyboard">
-        {KEYBOARD.map((row) => (
-          <div
-            key={row.row}
-            className={`keyboard-row ${row.row === 'melody' ? 'row-melody' : row.row === 'drums' ? 'row-drums' : 'row-bass'}`}
-            role="group"
-          >
-            {row.keys.map((k) => (
+    <main className="app">
+      {/* 顶部乐器切换栏 */}
+      <nav className="stagebar">
+        <div className="brand">
+          <span className="brand-name">Virtuoso<span className="brand-accent">Stage</span></span>
+          <span className="brand-sub">虚拟乐器演奏台</span>
+        </div>
+        <div className="stage-tabs">
+          {STAGES.map((s) => {
+            const active = stage === s.id;
+            return (
               <button
-                key={k.key}
-                type="button"
-                className={`drum${activeKey === k.key ? ' pressed' : ''}`}
-                data-key={k.key}
-                style={k.image ? { backgroundImage: `url(${k.image})` } : undefined}
-                aria-label={`${k.label}, ${k.key.toUpperCase()} key`}
-                onPointerDown={(e) => {
-                  e.preventDefault();
-                  triggerKey(k.key);
-                }}
+                key={s.id}
+                className={`stage-tab${active ? ' active' : ''}`}
+                onClick={() => setStage(s.id)}
+                title={s.sub}
               >
-                <span className="key-letter">{k.key}</span>
-                <span className="key-sound">{k.label}</span>
+                <span className="tab-icon">{s.icon}</span>
+                <span className="tab-name">{s.name}</span>
               </button>
-            ))}
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      </nav>
 
-      <div className="hint">
-        拖动 360° 旋转 · 滚轮缩放 · 点击 3D 鼓件敲击 · 键盘 A–L 打鼓，Q–P 旋律，Z–M 贝斯
-      </div>
+      <ScorePanel />
+
+      {/* 舞台区：架子鼓 = 3D 场景；旋律乐器 = 琴键 */}
+      {stage === 'drums' ? (
+        <>
+          <Scene />
+          <DrumKeyboard />
+          <div className="hint">
+            拖动 360° 旋转 · 滚轮缩放 · 点击 3D 鼓件敲击 · 键盘 A–L 打鼓，Q–P 旋律，Z–M 贝斯 · 拖入 .json 乐谱自动演奏
+          </div>
+        </>
+      ) : (
+        <div className="melody-stage">
+          <PianoKeys instrument={stage as InstrumentId} />
+        </div>
+      )}
     </main>
   );
 }

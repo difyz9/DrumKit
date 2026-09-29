@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Arvo:wght@400;700;900&family=Inter:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arvo:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap');
 
 * {
   margin: 0;
@@ -10,7 +10,7 @@ html,
 body {
   height: 100%;
   overflow: hidden;
-  background: #0a0a0f;
+  background: #08080d;
   color: #fff;
   font-family: 'Inter', system-ui, sans-serif;
 }
@@ -19,34 +19,239 @@ canvas {
   touch-action: none;
 }
 
-/* —— 顶部标题 —— */
-.title {
+.app {
   position: fixed;
-  top: 18px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  z-index: 10;
-  pointer-events: none;
-}
-.title h1 {
-  font-family: 'Arvo', cursive;
-  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-  color: #dbedf3;
-  text-shadow: 2px 0 #da0463;
-  letter-spacing: 0.12em;
-}
-.title p {
-  margin-top: 4px;
-  color: rgba(219, 237, 243, 0.65);
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-/* —— 底部 QWERTY 键盘 —— */
+/* ============ 顶部乐器切换栏 ============ */
+.stagebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 18px;
+  background: rgba(8, 8, 14, 0.82);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  flex-shrink: 0;
+}
+.brand-name {
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: #dbedf3;
+}
+.brand-accent {
+  color: #00e5ff;
+}
+.brand-sub {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.28em;
+}
+
+.stage-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 auto;
+}
+.stage-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.stage-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.stage-tab:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+.stage-tab.active {
+  background: rgba(0, 229, 255, 0.14);
+  border-color: rgba(0, 229, 255, 0.45);
+  color: #fff;
+}
+.tab-icon {
+  font-size: 17px;
+}
+.tab-name {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* ============ 乐谱面板 ============ */
+.score-panel {
+  position: fixed;
+  top: 72px;
+  left: 18px;
+  z-index: 15;
+  width: 262px;
+}
+
+.score-card {
+  background: rgba(10, 10, 18, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-size: 12px;
+}
+
+.score-title {
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #dbedf3;
+  margin-bottom: 9px;
+  font-size: 12px;
+}
+
+.score-select {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #1a1a24;
+  color: #fff;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+
+.score-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.score-play {
+  padding: 6px 16px;
+  border-radius: 7px;
+  border: none;
+  background: #00b7c6;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+.score-play.stop {
+  background: #da0463;
+}
+.score-play:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.score-meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.score-steps {
+  display: flex;
+  gap: 2px;
+  margin-top: 9px;
+}
+.score-steps .step {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.score-steps .step.beat {
+  background: rgba(255, 255, 255, 0.3);
+}
+.score-steps .step.cur {
+  background: #00e5ff;
+}
+
+.score-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 10px;
+}
+.score-import {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+}
+.score-help {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 11px;
+}
+.score-help:hover {
+  color: #fff;
+}
+
+.score-error {
+  margin-top: 6px;
+  color: #ff7b8a;
+  font-size: 11px;
+}
+
+.score-doc {
+  margin-top: 8px;
+  padding: 9px;
+  border-radius: 7px;
+  background: #14141e;
+  color: #9fe8ff;
+  font-size: 10px;
+  line-height: 1.55;
+  overflow: auto;
+  max-height: 240px;
+  white-space: pre-wrap;
+}
+
+.drop-overlay {
+  margin-top: 8px;
+  border: 2px dashed #00e5ff;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  color: #00e5ff;
+  font-size: 13px;
+  background: rgba(0, 229, 255, 0.1);
+}
+
+/* ============ 鼓键盘（QWERTY） ============ */
 .keyboard {
   position: fixed;
-  bottom: 14px;
+  bottom: 22px;
   left: 50%;
   transform: translateX(-50%);
   width: min(1120px, calc(100% - 1.5rem));
@@ -55,28 +260,19 @@ canvas {
   flex-direction: column;
   gap: 6px;
 }
-
 .keyboard-row {
   display: grid;
   gap: 0.45rem;
   margin: 0 auto;
   width: 100%;
 }
-.row-melody {
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-}
-.row-drums {
-  width: 90%;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
-}
-.row-bass {
-  width: 70%;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-}
+.row-melody { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.row-drums { width: 90%; grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.row-bass { width: 70%; grid-template-columns: repeat(7, minmax(0, 1fr)); }
 
 .drum {
   width: 100%;
-  max-width: 78px;
+  max-width: 74px;
   aspect-ratio: 1;
   justify-self: center;
   border: 4px solid #404b69;
@@ -97,9 +293,7 @@ canvas {
   overflow: hidden;
   transition: box-shadow 80ms ease, opacity 80ms ease, transform 80ms ease;
 }
-.key-letter {
-  font-size: clamp(1.3rem, 2.8vw, 1.8rem);
-}
+.key-letter { font-size: clamp(1.2rem, 2.6vw, 1.6rem); }
 .key-sound {
   max-width: calc(100% - 0.4rem);
   margin-top: 0.15rem;
@@ -108,70 +302,178 @@ canvas {
   color: #283149;
   background: rgb(219 237 243 / 88%);
   font-family: Arial, sans-serif;
-  font-size: 0.52rem;
+  font-size: 0.5rem;
   font-weight: 700;
   line-height: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .drum.pressed {
   box-shadow: 0 2px 2px 0 #dbedf3;
   opacity: 0.65;
   transform: translateY(3px) scale(0.98);
 }
-
-.drum:focus-visible {
-  outline: 3px solid #dbedf3;
-  outline-offset: 3px;
-}
+.drum:focus-visible { outline: 3px solid #dbedf3; outline-offset: 3px; }
 
 .hint {
   position: fixed;
   bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.38);
   font-size: 11px;
   letter-spacing: 0.05em;
   z-index: 10;
   pointer-events: none;
+  white-space: nowrap;
 }
 
-.controls {
-  position: fixed;
-  top: 18px;
-  right: 18px;
-  z-index: 11;
+/* ============ 旋律乐器舞台 ============ */
+.melody-stage {
+  position: absolute;
+  inset: 58px 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 20%, rgba(0, 120, 160, 0.16), transparent),
+    radial-gradient(ellipse 60% 50% at 80% 90%, rgba(180, 20, 90, 0.1), transparent),
+    #08080d;
+  overflow: auto;
+}
+
+.piano-stage {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 30px 20px 40px;
+}
+
+.piano-meta {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.piano-inst {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.04em;
+}
+.octave-ctrl {
+  display: flex;
+  align-items: center;
   gap: 8px;
-}
-.controls button {
-  padding: 7px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 229, 255, 0.4);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
-  color: #fff;
   font-size: 12px;
-  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
 }
-.controls button.on {
-  background: rgba(0, 229, 255, 0.25);
+.octave-ctrl button {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  cursor: pointer;
+  font-size: 11px;
+}
+.octave-ctrl button:hover {
+  background: rgba(0, 229, 255, 0.2);
+}
+
+.piano {
+  position: relative;
+  display: flex;
+  border-radius: 10px 10px 6px 6px;
+  overflow: visible;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), 0 2px 0 #2a2a36 inset;
+  background: #17171f;
+  padding: 10px 10px 8px;
+}
+
+.pkey-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.pkey {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 60ms, transform 60ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pkey.white {
+  width: 100%;
+  border-radius: 0 0 6px 6px;
+  background: linear-gradient(#f6f6f2, #e4e4dd);
+  box-shadow: inset 0 -3px 0 #c9c9c0, inset 1px 0 0 rgba(0, 0, 0, 0.06);
+}
+.pkey.white.on {
+  background: linear-gradient(#8ff3ff, #3ec9e0);
+  box-shadow: inset 0 -2px 0 #2aa5bd;
+  transform: translateY(1px);
+}
+
+.pkey.black {
+  position: absolute;
+  top: 10px;
+  z-index: 2;
+  border-radius: 0 0 5px 5px;
+  background: linear-gradient(#3a3a44, #101014);
+  box-shadow: inset 0 -3px 0 #000, 0 3px 5px rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.75);
+}
+.pkey.black.on {
+  background: linear-gradient(#0097ae, #00c2d4);
+  box-shadow: inset 0 -2px 0 #00707f;
+  transform: translateY(1px);
+}
+
+.pkey-note {
+  font-size: 10px;
+  color: #283149;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.pkey.white.on .pkey-note { color: #045b6b; }
+
+.pkey-kbd {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #283149;
+  background: rgba(40, 49, 73, 0.1);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+.pkey.black .pkey-kbd {
+  color: #dbedf3;
+  background: rgba(219, 237, 243, 0.14);
+  margin-bottom: 10px;
+}
+
+.piano-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.04em;
+  text-align: center;
 }
 
 @media (max-width: 900px) {
   .keyboard {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(58px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
     gap: 0.45rem;
   }
-  .keyboard-row {
-    display: contents;
-  }
-  .drum {
-    max-width: none;
-  }
+  .keyboard-row { display: contents; }
+  .drum { max-width: none; }
+  .score-panel { width: 232px; }
+  .brand-sub { display: none; }
 }
